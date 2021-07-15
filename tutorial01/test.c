@@ -7,6 +7,9 @@ static int main_ret = 0;
 static int test_count = 0;
 static int test_pass = 0;
 
+/*
+    执行判断功能的基础宏
+*/
 #define EXPECT_EQ_BASE(equality, expect, actual, format) \
     do {\
         test_count++;\
@@ -20,16 +23,42 @@ static int test_pass = 0;
 
 #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
 
+
+
 static void test_parse_null() {
     lept_value v;
     v.type = LEPT_FALSE;
+
+
     EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "null"));
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
 }
 
+/*  
+    add method test_parse_true, test_parse_false
+*/
+
+static void test_parse_true(){
+    lept_value v;
+    v.type = LEPT_FALSE;
+
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "true"));
+    EXPECT_EQ_INT(LEPT_TRUE, lept_get_type(&v));
+}
+
+static void test_parse_false(){
+    lept_value v;
+    v.type = LEPT_TRUE;
+
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "false"));
+    EXPECT_EQ_INT(LEPT_FALSE, lept_get_type(&v));
+}
+
+
 static void test_parse_expect_value() {
     lept_value v;
 
+    /* 空白值会置null的, 所以下面的测试置null */
     v.type = LEPT_FALSE;
     EXPECT_EQ_INT(LEPT_PARSE_EXPECT_VALUE, lept_parse(&v, ""));
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
@@ -57,8 +86,11 @@ static void test_parse_root_not_singular() {
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
 }
 
+
 static void test_parse() {
     test_parse_null();
+    test_parse_true();
+    test_parse_false();
     test_parse_expect_value();
     test_parse_invalid_value();
     test_parse_root_not_singular();
